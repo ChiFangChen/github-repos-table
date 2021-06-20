@@ -109,7 +109,7 @@ function Main() {
       <AppContent>
         <SearchBlock>
           <TextField
-            label={t('label')}
+            label={t('searchLabel')}
             value={search}
             onChange={handleSearchChange}
             className="input"
@@ -121,11 +121,13 @@ function Main() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Stars</TableCell>
-                  <TableCell>Language</TableCell>
-                  <TableCell>License</TableCell>
-                  <TableCell>Last Pushed at</TableCell>
+                  <TableCell>{t('name')}</TableCell>
+                  <TableCell className="sort-cell" onClick={switchSortOrder}>
+                    {t('stars')}
+                  </TableCell>
+                  <TableCell>{t('language')}</TableCell>
+                  <TableCell>{t('license')}</TableCell>
+                  <TableCell>{t('lastPushedAt')}</TableCell>
                 </TableRow>
               </TableHead>
 
