@@ -1,11 +1,16 @@
 import React, { Suspense } from 'react';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import 'fontsource-roboto';
 import 'normalize.css';
 
-import './i18n.ts';
-import './index.css';
 import Spinner from 'components/Spinner';
 import Main from 'pages/Main';
+
+import './i18n.ts';
+import './index.css';
+
+dayjs.extend(relativeTime);
 
 function App() {
   return (
