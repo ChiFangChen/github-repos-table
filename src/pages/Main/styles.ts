@@ -59,11 +59,22 @@ export const RepoTableWrapper = styled.div`
     cursor: pointer;
   }
 
+  .sort-cell {
+    white-space: nowrap;
+    cursor: pointer;
+
+    svg {
+      font-size: 14px;
+      vertical-align: inherit;
+    }
+  }
+
   .star-cell {
     white-space: nowrap;
 
     svg {
-      vertical-align: bottom;
+      font-size: 16px;
+      vertical-align: middle;
     }
   }
 `;

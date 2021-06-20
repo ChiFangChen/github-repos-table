@@ -22,12 +22,8 @@ const useGetRepos = ({ search, language, page, order }: UseGetReposParameter) =>
     {
       ...(searchText ? { q: searchText } : {}),
       page,
-      ...(order === 'none'
-        ? {}
-        : {
-            sort: 'stars',
-            order,
-          }),
+      sort: 'stars',
+      order,
     },
     { addQueryPrefix: true },
   );
@@ -37,8 +33,8 @@ const useGetRepos = ({ search, language, page, order }: UseGetReposParameter) =>
   });
 
   useEffect(() => {
-    data.fetch();
-  }, []);
+    if (search) data.fetch();
+  }, [language, order, page]);
 
   return data;
 };

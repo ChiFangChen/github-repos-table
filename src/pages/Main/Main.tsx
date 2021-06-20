@@ -16,6 +16,8 @@ import {
 } from '@material-ui/core';
 // import Pagination from '@material-ui/lab/Pagination';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
+import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
+import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 import dayjs from 'dayjs';
 
 import { popularLanguages } from 'utils/options';
@@ -37,8 +39,8 @@ function Main() {
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [order, setOrder] = useState('none'); // h:desc / l:asc / none
   const [language, setLanguage] = useState('any');
+  const [order, setOrder] = useState('desc'); // h:desc / l:asc
 
   const { isLoading, isDone, data, fetch } = useGetRepos({
     search,
@@ -106,6 +108,10 @@ function Main() {
     return String(count);
   };
 
+  const switchSortOrder = () => {
+    setOrder((oldState) => (oldState === 'desc' ? 'asc' : 'desc'));
+  };
+
   return (
     <AppWrapper>
       <Typography align="center" variant="h3" component="h1">
@@ -146,6 +152,8 @@ function Main() {
                   <TableCell>{t('name')}</TableCell>
                   <TableCell className="sort-cell" onClick={switchSortOrder}>
                     {t('stars')}
+                    {order === 'desc' && <ArrowUpwardIcon />}
+                    {order === 'asc' && <ArrowDownwardIcon />}
                   </TableCell>
                   <TableCell>{t('language')}</TableCell>
                   <TableCell>{t('license')}</TableCell>
