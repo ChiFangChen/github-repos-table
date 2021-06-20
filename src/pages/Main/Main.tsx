@@ -24,7 +24,10 @@ import { AppWrapper, AppContent, SearchBlock, TextField, RepoTableWrapper } from
 function Main() {
   /* i18n */
 
-  const { t } = useTranslation();
+  const {
+    t,
+    i18n: { language: i18nLanguage },
+  } = useTranslation();
 
   /* main data */
 
@@ -144,7 +147,9 @@ function Main() {
                         </TableCell>
                         <TableCell>{repo.language}</TableCell>
                         <TableCell>{repo.license?.name}</TableCell>
-                        <TableCell>{dayjs(repo.pushed_at).fromNow()}</TableCell>
+                        <TableCell>
+                          {dayjs(repo.pushed_at).locale(i18nLanguage).fromNow()}
+                        </TableCell>
                       </TableRow>
                     );
                   })}

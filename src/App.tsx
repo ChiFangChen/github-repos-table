@@ -1,6 +1,7 @@
 import React, { Suspense } from 'react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import 'dayjs/locale/zh-tw';
 import 'fontsource-roboto';
 import 'normalize.css';
 
