@@ -78,6 +78,12 @@ export const RepoTableWrapper = styled.div`
     }
   }
 
+  .pagination-block {
+    display: flex;
+    justify-content: center;
+    margin: 24px 0;
+  }
+
   .spinner-block {
     position: absolute;
     width: 100%;

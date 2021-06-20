@@ -14,11 +14,12 @@ import {
   SelectProps,
   MenuItem,
 } from '@material-ui/core';
-// import Pagination from '@material-ui/lab/Pagination';
+import Pagination from '@material-ui/lab/Pagination';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
 
+import { per_page, max_page } from 'utils/variables';
 import { popularLanguages } from 'utils/options';
 import useGetRepos from 'hooks/useGetRepos';
 import LanguageSwitcher from 'components/LanguageSwitcher';
@@ -56,6 +57,8 @@ function Main() {
     order,
   });
 
+  const paginationCount = data ? Math.ceil(data.total_count / per_page) : 0;
+
   const debounceFetch = useCallback(debounce(fetch, 500), []);
 
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -66,12 +69,18 @@ function Main() {
   };
 
   const handleLanguageChange: SelectProps['onChange'] = (event) => {
+    setPage(1);
     if (event.target.value) setLanguage(event.target.value as string);
   };
 
-  useEffect(() => {
-    if (isDone) window.scrollTo(0, 0);
-  }, [isDone]);
+  const switchSortOrder = () => {
+    setPage(1);
+    setOrder((oldState) => (oldState === 'desc' ? 'asc' : 'desc'));
+  };
+
+  const onPaginationChange = (event: object, page: number) => {
+    setPage(page);
+  };
 
   /* scroll */
 
@@ -92,9 +101,9 @@ function Main() {
     else setShowTopBtn(false);
   }, []);
 
-  const onRowClick = (url: string) => () => {
-    window.open(url);
-  };
+  useEffect(() => {
+    if (isDone) window.scrollTo(0, 0);
+  }, [isDone]);
 
   useEffect(() => {
     window.addEventListener('scroll', onListScroll);
@@ -108,8 +117,8 @@ function Main() {
     return String(count);
   };
 
-  const switchSortOrder = () => {
-    setOrder((oldState) => (oldState === 'desc' ? 'asc' : 'desc'));
+  const onRowClick = (url: string) => () => {
+    window.open(url);
   };
 
   return (
@@ -194,7 +203,16 @@ function Main() {
             </Table>
           </TableContainer>
 
-          {/* <Pagination count={10} color="secondary" /> */}
+          {!(!data || !data.items.length) && (
+            <div className="pagination-block">
+              <Pagination
+                count={paginationCount < max_page ? paginationCount : max_page}
+                color="secondary"
+                page={page}
+                onChange={onPaginationChange}
+              />
+            </div>
+          )}
 
           {isLoading && !!data?.items.length && (
             <div className="spinner-block">

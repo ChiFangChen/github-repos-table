@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import qs from 'qs';
 import { Endpoints } from '@octokit/types';
 
+import { per_page } from 'utils/variables';
 import useFetch from 'hooks/useFetch';
 
 type ReposResponse = Endpoints['GET /search/repositories']['response']['data'];
@@ -24,6 +25,7 @@ const useGetRepos = ({ search, language, page, order }: UseGetReposParameter) =>
       page,
       sort: 'stars',
       order,
+      per_page,
     },
     { addQueryPrefix: true },
   );
