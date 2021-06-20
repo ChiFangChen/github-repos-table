@@ -1,7 +1,7 @@
 {
   "heading": "GitHub 專案搜尋器",
   "searchLabel": "專案名稱",
-  "noMoreData": "無更多資料",
+  "noData": "無資料",
   "language": "語言",
   "anyLanguages": "任何語言",
   "name": "名稱",

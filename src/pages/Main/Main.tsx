@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useState, useCallback, useRef, useEffect } from 'react';
+import React, { ChangeEvent, useState, useCallback, useEffect } from 'react';
 import { debounce } from 'ts-debounce';
 import { useTranslation } from 'react-i18next';
+import dayjs from 'dayjs';
 import {
-  Paper,
   Typography,
   Table,
   TableBody,
@@ -18,14 +18,21 @@ import {
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import ArrowUpwardIcon from '@material-ui/icons/ArrowUpward';
 import ArrowDownwardIcon from '@material-ui/icons/ArrowDownward';
-import dayjs from 'dayjs';
 
 import { popularLanguages } from 'utils/options';
 import useGetRepos from 'hooks/useGetRepos';
 import LanguageSwitcher from 'components/LanguageSwitcher';
+import Spinner from 'components/Spinner';
 import TopButton from 'components/TopButton';
 
-import { AppWrapper, AppContent, SearchBlock, TextField, RepoTableWrapper } from './styles';
+import {
+  AppWrapper,
+  AppContent,
+  SearchBlock,
+  TextField,
+  RepoTableWrapper,
+  LoadingTableRow,
+} from './styles';
 
 function Main() {
   /* i18n */
@@ -63,43 +70,36 @@ function Main() {
   };
 
   useEffect(() => {
-    if (isDone) repoListRef.current?.scrollTo(0, 0);
+    if (isDone) window.scrollTo(0, 0);
   }, [isDone]);
 
   /* scroll */
 
   const [showTopBtn, setShowTopBtn] = useState(false);
 
-  const repoListRef = useRef<HTMLDivElement>(null);
-
   const onTopBottomClick = (): void =>
-    repoListRef.current?.scrollTo({
+    window.scrollTo({
       top: 0,
       left: 0,
       behavior: 'smooth',
     });
 
   const onListScroll = useCallback(() => {
-    if (!repoListRef.current) return;
-
     // clientHeight + scrollTop = scrollHeight
-    const { scrollTop } = repoListRef.current;
-
-    console.log(scrollTop);
+    const scrollTop = window.pageYOffset;
 
     if (scrollTop > 100) setShowTopBtn(true);
     else setShowTopBtn(false);
-  }, [repoListRef]);
+  }, []);
 
   const onRowClick = (url: string) => () => {
     window.open(url);
   };
 
   useEffect(() => {
-    const repoList = repoListRef.current;
-    if (repoList) repoList.addEventListener('scroll', onListScroll);
+    window.addEventListener('scroll', onListScroll);
     return () => {
-      if (repoList) repoList.removeEventListener('scroll', onListScroll);
+      window.removeEventListener('scroll', onListScroll);
     };
   }, [onListScroll]);
 
@@ -144,8 +144,8 @@ function Main() {
           </Select>
         </SearchBlock>
 
-        <RepoTableWrapper ref={repoListRef}>
-          <TableContainer component={Paper}>
+        <RepoTableWrapper>
+          <TableContainer>
             <Table>
               <TableHead>
                 <TableRow>
@@ -162,7 +162,11 @@ function Main() {
               </TableHead>
 
               <TableBody>
-                {data &&
+                {!data || !data.items.length ? (
+                  <LoadingTableRow>
+                    <TableCell colSpan={5}>{isLoading ? <Spinner /> : t('noData')}</TableCell>
+                  </LoadingTableRow>
+                ) : (
                   data.items.map((repo, i: number) => {
                     return (
                       <TableRow
@@ -184,12 +188,19 @@ function Main() {
                         </TableCell>
                       </TableRow>
                     );
-                  })}
+                  })
+                )}
               </TableBody>
             </Table>
-
-            {/* <Pagination count={10} color="secondary" /> */}
           </TableContainer>
+
+          {/* <Pagination count={10} color="secondary" /> */}
+
+          {isLoading && !!data?.items.length && (
+            <div className="spinner-block">
+              <Spinner />
+            </div>
+          )}
 
           <TopButton show={showTopBtn} onClick={onTopBottomClick} />
         </RepoTableWrapper>

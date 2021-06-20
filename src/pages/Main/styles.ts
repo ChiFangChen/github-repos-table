@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import MaterialTextField from '@material-ui/core/TextField';
+import TableRow from '@material-ui/core/TableRow';
 
 import { MOBILE_MAX } from 'utils/variables';
 
@@ -52,8 +53,7 @@ export const TextField = styled(MaterialTextField)`
 `;
 
 export const RepoTableWrapper = styled.div`
-  flex: 1;
-  overflow: scroll;
+  position: relative;
 
   .row {
     cursor: pointer;
@@ -76,5 +76,22 @@ export const RepoTableWrapper = styled.div`
       font-size: 16px;
       vertical-align: middle;
     }
+  }
+
+  .spinner-block {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 56px;
+    background-color: rgb(255 255 255 / 60%);
+    display: flex;
+    justify-content: center;
+  }
+`;
+
+export const LoadingTableRow = styled(TableRow)`
+  td {
+    border: none;
+    text-align: center;
   }
 `;
