@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import qs from 'qs';
 import { Endpoints } from '@octokit/types';
 
@@ -8,56 +8,36 @@ type ReposResponse = Endpoints['GET /search/repositories']['response']['data'];
 
 type UseGetReposParameter = {
   search: string;
+  language: string;
   page: number;
-  per_page: number;
+  order: string;
 };
 
-const useGetRepos = ({ search, page, per_page }: UseGetReposParameter) => {
-  const [accumulatedRepos, setAccumulatedRepos] = useState<ReposResponse['items']>([]);
-
+const useGetRepos = ({ search, language, page, order }: UseGetReposParameter) => {
+  const searchText = encodeURIComponent(search);
   const query = qs.stringify(
     {
-      q: encodeURIComponent(search),
+      ...(searchText ? { q: searchText } : {}),
       page,
-      per_page,
+      ...(order === 'none'
+        ? {}
+        : {
+            sort: 'stars',
+            order,
+          }),
     },
     { addQueryPrefix: true },
   );
 
-  const {
-    data = {
-      items: [],
-      total_count: 0,
-    },
-    reset: orinReset,
-    ...result
-  } = useFetch<ReposResponse>({
+  const data = useFetch<ReposResponse>({
     path: `/search/repositories${query}`,
   });
 
   useEffect(() => {
-    if (result.isDone) {
-      if (page === 1) {
-        setAccumulatedRepos(data.items);
-      } else {
-        setAccumulatedRepos((r) => [...r, ...data.items]);
-      }
-    }
-  }, [result.isDone]);
+    data.fetch();
+  }, []);
 
-  const reset = () => {
-    orinReset();
-    setAccumulatedRepos([]);
-  };
-
-  return {
-    data: {
-      ...data,
-      items: accumulatedRepos,
-    },
-    reset,
-    ...result,
-  };
+  return data;
 };
 
 export default useGetRepos;

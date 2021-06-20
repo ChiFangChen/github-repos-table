@@ -1,15 +1,25 @@
-import React, { ChangeEvent, useState, useMemo, useCallback, useRef, useEffect } from 'react';
+import React, { ChangeEvent, useState, useCallback, useRef, useEffect } from 'react';
 import { debounce } from 'ts-debounce';
 import { useTranslation } from 'react-i18next';
-import { Typography, Snackbar, Fade } from '@material-ui/core';
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from '@material-ui/core';
+// import Pagination from '@material-ui/lab/Pagination';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import dayjs from 'dayjs';
 
-import { per_page } from 'utils/variables';
 import useGetRepos from 'hooks/useGetRepos';
 import LanguageSwitcher from 'components/LanguageSwitcher';
-import Spinner from 'components/Spinner';
 import TopButton from 'components/TopButton';
 
-import { AppWrapper, SearchBlock, TextField, RepoList, RepoListItem } from './styles';
+import { AppWrapper, AppContent, SearchBlock, TextField, RepoTableWrapper } from './styles';
 
 function Main() {
   /* i18n */
@@ -18,18 +28,16 @@ function Main() {
 
   /* main data */
 
-  const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState('');
+  const [language, setLanguage] = useState('');
+  const [order, setOrder] = useState('none'); // h:desc / l:asc / none
 
-  const {
-    isLoading,
-    isDone,
-    data: { items: repos, total_count: repoCount },
-    fetch,
-  } = useGetRepos({
+  const { isLoading, isDone, data, fetch } = useGetRepos({
     search,
+    language,
     page,
-    per_page,
+    order,
   });
 
   const debounceFetch = useCallback(debounce(fetch, 500), []);
@@ -42,23 +50,12 @@ function Main() {
   };
 
   useEffect(() => {
-    if (isDone) {
-      if (page === 1) {
-        repoListRef.current?.scrollTo(0, 0);
-      }
-      setPage((p) => p + 1);
-    }
+    if (isDone) repoListRef.current?.scrollTo(0, 0);
   }, [isDone]);
 
   /* scroll */
 
   const [showTopBtn, setShowTopBtn] = useState(false);
-
-  const [showSnackbar, setShowSnackbar] = useState(false);
-
-  const isNotFinished = useMemo(() => repoCount > per_page * (page - 1), [repoCount, page]);
-
-  const closeSnackbar = () => setShowSnackbar(false);
 
   const repoListRef = useRef<HTMLDivElement>(null);
 
@@ -73,16 +70,17 @@ function Main() {
     if (!repoListRef.current) return;
 
     // clientHeight + scrollTop = scrollHeight
-    const { clientHeight, scrollTop, scrollHeight } = repoListRef.current;
+    const { scrollTop } = repoListRef.current;
 
-    if (!isLoading && scrollTop + clientHeight >= scrollHeight) {
-      if (isNotFinished) fetch();
-      else setShowSnackbar(true);
-    }
+    console.log(scrollTop);
 
     if (scrollTop > 100) setShowTopBtn(true);
     else setShowTopBtn(false);
-  }, [repoListRef, isLoading, isNotFinished, fetch]);
+  }, [repoListRef]);
+
+  const onRowClick = (url: string) => () => {
+    window.open(url);
+  };
 
   useEffect(() => {
     const repoList = repoListRef.current;
@@ -92,6 +90,11 @@ function Main() {
     };
   }, [onListScroll]);
 
+  const getStarCount = (count: number): string => {
+    if (`${count}`.length >= 4) return `${Math.round(count / 100) / 10} k`;
+    return String(count);
+  };
+
   return (
     <AppWrapper>
       <Typography align="center" variant="h3" component="h1">
@@ -100,37 +103,60 @@ function Main() {
 
       <LanguageSwitcher />
 
-      <SearchBlock>
-        <TextField
-          label={t('label')}
-          value={search}
-          onChange={handleSearchChange}
-          className="input"
-        />
-      </SearchBlock>
+      <AppContent>
+        <SearchBlock>
+          <TextField
+            label={t('label')}
+            value={search}
+            onChange={handleSearchChange}
+            className="input"
+          />
+        </SearchBlock>
 
-      <RepoList ref={repoListRef}>
-        {repos.map((repo, i) => (
-          <RepoListItem key={`${repo.id}${i}`} href={repo.svn_url} target="_blank" rel="noreferrer">
-            {repo.full_name}
-          </RepoListItem>
-        ))}
+        <RepoTableWrapper ref={repoListRef}>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Name</TableCell>
+                  <TableCell>Stars</TableCell>
+                  <TableCell>Language</TableCell>
+                  <TableCell>License</TableCell>
+                  <TableCell>Last Pushed at</TableCell>
+                </TableRow>
+              </TableHead>
 
-        <Spinner isLoading={isLoading} />
+              <TableBody>
+                {data &&
+                  data.items.map((repo, i: number) => {
+                    return (
+                      <TableRow
+                        key={`${repo.id}${i}`}
+                        className="row"
+                        onClick={onRowClick(repo.svn_url)}
+                      >
+                        <TableCell component="th" scope="row">
+                          {repo.full_name}
+                        </TableCell>
+                        <TableCell className="star-cell">
+                          <StarBorderIcon />
+                          {getStarCount(repo.stargazers_count)}
+                        </TableCell>
+                        <TableCell>{repo.language}</TableCell>
+                        <TableCell>{repo.license?.name}</TableCell>
+                        <TableCell>{dayjs(repo.pushed_at).fromNow()}</TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
+            </Table>
 
-        <Snackbar
-          open={showSnackbar}
-          onClose={closeSnackbar}
-          TransitionComponent={Fade}
-          autoHideDuration={1000}
-        >
-          <Typography variant="overline" display="block">
-            {t('noMoreData')}
-          </Typography>
-        </Snackbar>
+            {/* <Pagination count={10} color="secondary" /> */}
+          </TableContainer>
 
-        <TopButton show={showTopBtn} onClick={onTopBottomClick} />
-      </RepoList>
+          <TopButton show={showTopBtn} onClick={onTopBottomClick} />
+        </RepoTableWrapper>
+      </AppContent>
     </AppWrapper>
   );
 }

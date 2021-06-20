@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import MaterialTextField from '@material-ui/core/TextField';
 
 import { MOBILE_MAX } from 'utils/variables';
-import { FlexCenter } from 'utils/styles';
 
 export const AppWrapper = styled.div`
   height: 100vh;
@@ -12,10 +11,19 @@ export const AppWrapper = styled.div`
 `;
 
 export const SearchBlock = styled.div`
-  margin: 0 25px 25px;
+  margin: 0 16px 25px;
 
   > div {
     width: 100%;
+  }
+`;
+
+export const AppContent = styled.div`
+  margin: 0 auto;
+  width: 80%;
+
+  @media (max-width: ${MOBILE_MAX}) {
+    width: 90%;
   }
 `;
 
@@ -37,35 +45,19 @@ export const TextField = styled(MaterialTextField)`
   }
 `;
 
-export const RepoList = styled.div`
+export const RepoTableWrapper = styled.div`
   flex: 1;
   overflow: scroll;
-`;
 
-export const RepoListItem = styled.a`
-  ${FlexCenter}
-  height: 40px;
-  width: 100%;
-  color: #000;
-  background-color: whitesmoke;
-  text-decoration: none;
-  border: 1px solid #fff;
-  padding: 25px;
-
-  &:visited {
-    color: #999;
+  .row {
+    cursor: pointer;
   }
 
-  &:hover {
-    color: #fff;
-    background-color: thistle;
+  .star-cell {
+    white-space: nowrap;
 
-    &:visited {
-      background-color: #d2aed2;
+    svg {
+      vertical-align: bottom;
     }
-  }
-
-  @media (max-width: ${MOBILE_MAX}) {
-    justify-content: left;
   }
 `;
