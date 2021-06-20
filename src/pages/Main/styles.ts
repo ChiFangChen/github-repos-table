@@ -7,14 +7,20 @@ export const AppWrapper = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-top: 25px;
+  padding-top: 24px;
 `;
 
 export const SearchBlock = styled.div`
-  margin: 0 16px 25px;
+  margin: 0 16px 24px;
+  display: flex;
 
-  > div {
-    width: 100%;
+  .search {
+    flex: 1;
+    margin-right: 12px;
+  }
+
+  .lan {
+    width: 30%;
   }
 `;
 

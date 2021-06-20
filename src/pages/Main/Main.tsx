@@ -2,6 +2,7 @@ import React, { ChangeEvent, useState, useCallback, useRef, useEffect } from 're
 import { debounce } from 'ts-debounce';
 import { useTranslation } from 'react-i18next';
 import {
+  Paper,
   Typography,
   Table,
   TableBody,
@@ -9,12 +10,15 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Paper,
+  Select,
+  SelectProps,
+  MenuItem,
 } from '@material-ui/core';
 // import Pagination from '@material-ui/lab/Pagination';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import dayjs from 'dayjs';
 
+import { popularLanguages } from 'utils/options';
 import useGetRepos from 'hooks/useGetRepos';
 import LanguageSwitcher from 'components/LanguageSwitcher';
 import TopButton from 'components/TopButton';
@@ -33,8 +37,8 @@ function Main() {
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
-  const [language, setLanguage] = useState('');
   const [order, setOrder] = useState('none'); // h:desc / l:asc / none
+  const [language, setLanguage] = useState('any');
 
   const { isLoading, isDone, data, fetch } = useGetRepos({
     search,
@@ -50,6 +54,10 @@ function Main() {
     // init page
     setPage(1);
     debounceFetch();
+  };
+
+  const handleLanguageChange: SelectProps['onChange'] = (event) => {
+    if (event.target.value) setLanguage(event.target.value as string);
   };
 
   useEffect(() => {
@@ -112,8 +120,22 @@ function Main() {
             label={t('searchLabel')}
             value={search}
             onChange={handleSearchChange}
-            className="input"
+            className="input search"
           />
+
+          <Select
+            label={t('language')}
+            value={language}
+            onChange={handleLanguageChange}
+            className="lan"
+          >
+            <MenuItem value="any">{t('anyLanguages')}</MenuItem>
+            {popularLanguages.map((lan) => (
+              <MenuItem key={lan} value={lan}>
+                {lan}
+              </MenuItem>
+            ))}
+          </Select>
         </SearchBlock>
 
         <RepoTableWrapper ref={repoListRef}>

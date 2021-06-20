@@ -14,7 +14,10 @@ type UseGetReposParameter = {
 };
 
 const useGetRepos = ({ search, language, page, order }: UseGetReposParameter) => {
-  const searchText = encodeURIComponent(search);
+  const filterLanguage = language !== 'any';
+  const searchText = `${encodeURIComponent(search)}${
+    filterLanguage ? `+language:${language}` : ''
+  }`;
   const query = qs.stringify(
     {
       ...(searchText ? { q: searchText } : {}),
