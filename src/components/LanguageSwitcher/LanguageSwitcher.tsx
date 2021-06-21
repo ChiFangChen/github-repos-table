@@ -31,7 +31,7 @@ const LanguageSwitcher: FC = (prop) => {
   return (
     <LangBtnWrapper {...prop}>
       <IconButton ref={langBtnRef} onClick={openLangNav}>
-        <LanguageIcon fontSize="small" />
+        <LanguageIcon fontSize="small" className="global-icon" />
       </IconButton>
 
       <Popper

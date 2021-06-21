@@ -222,6 +222,7 @@ function Main() {
                 color="secondary"
                 page={page}
                 onChange={onPaginationChange}
+                size="small"
               />
             </div>
           )}

@@ -5,4 +5,9 @@ export const LangBtnWrapper = styled.div`
   position: fixed;
   right: 5px;
   top: 5px;
+
+  .global-icon {
+    background-color: white;
+    border-radius: 50%;
+  }
 `;
