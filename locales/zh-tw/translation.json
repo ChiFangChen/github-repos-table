@@ -1,0 +1,13 @@
+{
+  "heading": "GitHub 專案搜尋器",
+  "searchLabel": "專案名稱",
+  "noData": "無資料",
+  "language": "語言",
+  "anyLanguages": "任何語言",
+  "name": "名稱",
+  "stars": "星星",
+  "language": "語言",
+  "license": "版權",
+  "lastPushedAt": "最後更新時間",
+  "somethingWrong": "出錯了，請稍後再試一次！錯誤碼 "
+}

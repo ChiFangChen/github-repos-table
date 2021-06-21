@@ -1,0 +1,13 @@
+{
+  "heading": "GitHub Repositories Searcher",
+  "searchLabel": "Repository Name",
+  "noData": "No data",
+  "language": "Language",
+  "anyLanguages": "Any languages",
+  "name": "Name",
+  "stars": "Stars",
+  "language": "Language",
+  "license": "License",
+  "lastPushedAt": "Last Pushed at",
+  "somethingWrong": "Something goes wrong, please try it again later! Error code "
+}
