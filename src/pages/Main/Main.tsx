@@ -13,6 +13,8 @@ import {
   Select,
   SelectProps,
   MenuItem,
+  Snackbar,
+  Fade,
 } from '@material-ui/core';
 import Pagination from '@material-ui/lab/Pagination';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
@@ -50,7 +52,7 @@ function Main() {
   const [language, setLanguage] = useState('any');
   const [order, setOrder] = useState('desc'); // h:desc / l:asc
 
-  const { isLoading, isDone, data, fetch } = useGetRepos({
+  const { isLoading, isDone, data, isErr, statusCode, fetch } = useGetRepos({
     search,
     language,
     page,
@@ -120,6 +122,16 @@ function Main() {
   const onRowClick = (url: string) => () => {
     window.open(url);
   };
+
+  /* error message */
+
+  const [showSnackbar, setShowSnackbar] = useState(false);
+
+  const closeSnackbar = () => setShowSnackbar(false);
+
+  useEffect(() => {
+    if (isErr) setShowSnackbar(true);
+  }, [isErr]);
 
   return (
     <AppWrapper>
@@ -223,6 +235,17 @@ function Main() {
           <TopButton show={showTopBtn} onClick={onTopBottomClick} />
         </RepoTableWrapper>
       </AppContent>
+
+      <Snackbar
+        open={showSnackbar}
+        onClose={closeSnackbar}
+        TransitionComponent={Fade}
+        autoHideDuration={1000}
+      >
+        <Typography variant="overline" display="block">
+          {`${t('somethingWrong')}${statusCode}`}
+        </Typography>
+      </Snackbar>
     </AppWrapper>
   );
 }

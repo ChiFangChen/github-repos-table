@@ -8,5 +8,6 @@
   "stars": "星星",
   "language": "語言",
   "license": "版權",
-  "lastPushedAt": "最後更新時間"
+  "lastPushedAt": "最後更新時間",
+  "somethingWrong": "出錯了，請稍後再試一次！錯誤碼 "
 }

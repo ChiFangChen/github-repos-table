@@ -8,5 +8,6 @@
   "stars": "Stars",
   "language": "Language",
   "license": "License",
-  "lastPushedAt": "Last Pushed at"
+  "lastPushedAt": "Last Pushed at",
+  "somethingWrong": "Something goes wrong, please try it again later! Error code "
 }
